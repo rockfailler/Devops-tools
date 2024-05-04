@@ -1,0 +1,176 @@
+=>list and  watch with sorting the cpu uses of the pod :
+$ watch -n 1 "kubectl top pod -n <my-namespace> --sort-by=cpu"
+
+
+=>list and  watch with  the HPA uses of the perticaulr namespace :
+$ watch -n 1 "kubectl get hpa -n <my-namespace> "
+
+
+
+=>find the error from the log of pod:
+kubectl logs <my-podname > -n <my-namespace> | grep "error"
+
+
+watch -n 1 "kubectl describe  hpa <my-hpa-name> -n deliveryservice"
+
+=========
+https://metallb.universe.tf/usage/    // loadbalancer
+
+
+
+This will display the node name where the pod is scheduled:
+$ kubectl get pod -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name --all-namespaces
+
+
+$ helm get values RELEASE_NAME [flags]
+
+======
+$ helm get values metallb -n metallb-system
+
+$ helm list --all-namespaces
+
+======
+
+Logs:
+$ kubectl logs -f <my-podname> -n <my-namespace> --tail 100
+
+Priting the logs output in logs.txt file:
+$ kubectl logs -f <my-podname> -n <my-namespace> > logs.txt
+
+$ cat logs.txt | grep SendMessage                      # check the pattern lets say "SendMessage"
+
+
+
+
+==================
+traffic monitoring :
+=====================
+This command retrieves the network I/O statistics (received bytes and transmitted bytes) for a specific container within a pod in a Kubernetes namespace using JSONPath format:
+$ kubectl get pod <pod name> -o jsonpath='{.status.containerStatuses[0].network.interfaces[0].rxBytes}{"\t"}{.status.containerStatuses[0].network.interfaces[0].txBytes}' -n <namespace>
+
+This command allows you to execute the netstat -antp command inside the container named <my-pod> in the <default> namespace, providing you with information about network connections and listening ports within the container.
+$ kubectl exec -it <my-pod> -n <default> -- netstat -antp
+
+kubectl top pods -n default -p <my-pod>
+
+
+
+
+
+==========
+Troubleshoot Error:
+=================
+$ kubectl get events --field-selector type=Warning --all-namespaces        # all the pod with warning .
+$ kubectl get nodes -o wide --label-columns topology.kubernetes.io/zone    # Detailed information of master and worker machine with iso image and all.
+
+
+
+
+
+===========
+Helm:
+helm list -n <namespace>                                                            # to list the release name 
+helm get manifest <my-releasename> -n <namespace>                                 # to check the manifest 
+
+helm upgrade <my-releasename> -f <modified-manifest-file> -n <namespace>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+============
+kubectl get service my-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'  
+
+https://blog.getambassador.io/externaltrafficpolicy-local-on-kubernetes-e66e498212f9
+
+
+
+Scale down/up :
+===============
+kubectl scale deployment <my-deploymnet-name> --replicas=1 -n <my-namespace>
+
+kubectl scale deployment <my-deploymnet-name> --replicas=1 -n <my-namespace>
+kubectl scale statefulset <my-staetfulset-name> --replicas=1 -n transactionapi
+
+
+
+labling the node for resource managemnet 
+==============
+kubectl get nodes --show-labels
+kubectl label nodes 172.12.54.98  type=app --overwrite            # we are labeling the node with "type=app" or "type=slector"
+
+Forcefully delete ns with state Terminating:
+============================================
+NS=`kubectl get ns |grep Terminating | awk 'NR==1 {print $1}'` && kubectl get namespace "$NS" -o json   | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/"   | kubectl replace --raw /api/v1/namespaces/$NS/finalize -f -
+
+helm uninstall --namespace <my-namsespace> <helm-release-name>
+
+Forcefully delete pod:
+======================
+kubectl delete pod <PODNAME> --grace-period=0 --force --namespace <NAMESPACE>
+
+Forcefully delete PV and PVC :
+===============================
+$ kubectl patch pv <persistentvolume-name> -p '{"metadata":{"finalizers":null}}'
+
+$ kubectl patch pvc <persistentvolumeclaim-name> -n <namespace> -p '{"metadata":{"finalizers":null}}'
+
+
+
+Delete the pods with spesific status :
+=======================================
+$ kubectl delete pod -n <name-space> `kubectl get pods -n <name-space> | awk '$3 == "ContainerStatusUnknown" {print $1}'`
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Pending" {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Failed" {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 ~ /^(CrashLoopBackOff|ImagePullBackOff|ErrImagePull|InvalidImageName|CreateContainerConfigError|RunContainerError|Completed|Error)$/ {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Terminating" {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Evicted" {print $1}')
+
+
+
+
+Copy file inside of conatiner:
+==============================		  
+kubectl cp /path/to/local/file.txt <pod-name>:/path/inside/pod/
+or 
+kubectl cp <postgres-cluster-pod>:/home/postgres/waldata.txt ~/waldata.txt
+		  	  
+	  
+# Create a tar archive of the local text file
+tar czf /tmp/example.tar.gz -C /path/to/local/ example.txt
+
+# Copy the tar archive to the first location inside the pod
+kubectl cp /tmp/example.tar.gz my-pod:/path/inside/pod/location1/
+
+# Execute a command inside the pod to extract the tar archive to the second location
+kubectl exec my-pod -- tar xzf /path/inside/pod/location1/example.tar.gz -C /path/inside/pod/location2/
+	  
+
+Context Command:
+================
+kubectl config get-contexts                           //To view all the contenxs
+kubectl congif use-contexts  <context_name>           //To use perticular context.
+kubectl config current-contexts                       // to view the correct contexts
+
+$ kubectl run <podname> --image=httpd:2.4.41-alpine --dry-run=clinet -o yaml            //it will do dry run and then print in yaml format  
+
+
+
+
+
+
+$ kubectl rollout restart deployment <my-deploymnet> -n <my-namespace>
