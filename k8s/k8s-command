@@ -71,9 +71,9 @@ $ kubectl get nodes -o wide --label-columns topology.kubernetes.io/zone    # Det
 ===========
 Helm:
 helm list -n <namespace>                                                            # to list the release name 
-helm get manifest loyaltygatewayservice -n gatewayservice                           # to check the manifest 
+helm get manifest <my-releasename> -n <namespace>                                 # to check the manifest 
 
-helm upgrade loyaltygatewayservice -f <modified-manifest-file> -n gatewayservice
+helm upgrade <my-releasename> -f <modified-manifest-file> -n <namespace>
 
 
 
@@ -97,23 +97,23 @@ https://blog.getambassador.io/externaltrafficpolicy-local-on-kubernetes-e66e4982
 
 Scale down/up :
 ===============
-kubectl scale deployment loyaltytransactionapi --replicas=1 -n transactionapi
+kubectl scale deployment <my-deploymnet-name> --replicas=1 -n <my-namespace>
 
-kubectl scale deployment loyaltytransactionapi --replicas=1 -n transactionapi
-kubectl scale statefulset <> --replicas=1 -n transactionapi
+kubectl scale deployment <my-deploymnet-name> --replicas=1 -n <my-namespace>
+kubectl scale statefulset <my-staetfulset-name> --replicas=1 -n transactionapi
 
 
 
 labling the node for resource managemnet 
 ==============
 kubectl get nodes --show-labels
-kubectl label nodes 172.28.53.57  type=app --overwrite
+kubectl label nodes 172.12.54.98  type=app --overwrite            # we are labeling the node with "type=app" or "type=slector"
 
 Forcefully delete ns with state Terminating:
 ============================================
 NS=`kubectl get ns |grep Terminating | awk 'NR==1 {print $1}'` && kubectl get namespace "$NS" -o json   | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/"   | kubectl replace --raw /api/v1/namespaces/$NS/finalize -f -
 
-helm uninstall --namespace wallet wallet-api
+helm uninstall --namespace <my-namsespace> <helm-release-name>
 
 Forcefully delete pod:
 ======================
@@ -121,24 +121,34 @@ kubectl delete pod <PODNAME> --grace-period=0 --force --namespace <NAMESPACE>
 
 Forcefully delete PV and PVC :
 ===============================
-kubectl patch pv <persistentvolume-name> -p '{"metadata":{"finalizers":null}}'
+$ kubectl patch pv <persistentvolume-name> -p '{"metadata":{"finalizers":null}}'
 
-kubectl patch pvc <persistentvolumeclaim-name> -n <namespace> -p '{"metadata":{"finalizers":null}}'
-
-$ kubectl patch pv pvc-40be33e2-8f93-410a-b3bf-00f5d03501d5 -p '{"metadata":{"finalizers":null}}'
-$ kubectl patch pvc elasticsearch-data-devops-es-data-1 -n elastic-system -p '{"metadata":{"finalizers":null}}'
+$ kubectl patch pvc <persistentvolumeclaim-name> -n <namespace> -p '{"metadata":{"finalizers":null}}'
 
 
 
 Delete the pods with spesific status :
 =======================================
-kubectl delete pod -n identity-server `kubectl get pods -n identity-server | awk '$3 == "ContainerStatusUnknown" {print $1}'`
-    	  
+$ kubectl delete pod -n <name-space> `kubectl get pods -n <name-space> | awk '$3 == "ContainerStatusUnknown" {print $1}'`
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Pending" {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Failed" {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 ~ /^(CrashLoopBackOff|ImagePullBackOff|ErrImagePull|InvalidImageName|CreateContainerConfigError|RunContainerError|Completed|Error)$/ {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Terminating" {print $1}')
+
+$ kubectl delete pod -n <namespace> $(kubectl get pods -n <namespace> | awk '$3 == "Evicted" {print $1}')
+
+
 
 
 Copy file inside of conatiner:
 ==============================		  
 kubectl cp /path/to/local/file.txt <pod-name>:/path/inside/pod/
+or 
+kubectl cp <postgres-cluster-pod>:/home/postgres/waldata.txt ~/waldata.txt
 		  	  
 	  
 # Create a tar archive of the local text file
@@ -153,24 +163,17 @@ kubectl exec my-pod -- tar xzf /path/inside/pod/location1/example.tar.gz -C /pat
 
 Context Command:
 ================
-kubectl config get-contexts             //To view all the contenxs
+kubectl config get-contexts                           //To view all the contenxs
 kubectl congif use-contexts  <context_name>           //To use perticular context.
 kubectl config current-contexts                       // to view the correct contexts
 
-k run <podname> --image=httpd:2.4.41-alpine --dry-run=clinet -o yaml            //it will do dry run and then print in yaml format  
+$ kubectl run <podname> --image=httpd:2.4.41-alpine --dry-run=clinet -o yaml            //it will do dry run and then print in yaml format  
 
 
 
 
 
-kubectl delete pod -n managementapp `kubectl get pods -n managementapp | awk '$3 == "Evicted" {print $1}'`
+
+$ kubectl rollout restart deployment <my-deploymnet> -n <my-namespace>
 
 
-
-kubectl rollout restart deployment loyaltydeliveryservice -n deliveryservice
-
-kubectl rollout restart deployment development-ids -n identity-server
-
-kubectl rollout restart deployment development-idsapi -n identity-server
-
-kubectl rollout restart deployment development-idsui -n identity-server
