@@ -1,0 +1,5 @@
+Docker Remove on Ubuntu:
+========================
+docker stop $(docker ps -q)
+docker rm $(docker ps -a -q)
+sudo apt-get purge docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
