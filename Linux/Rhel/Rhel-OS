@@ -1,0 +1,130 @@
+Registration with Redhat devloper subscription plan or go with Commercial plan 
+============================================================================== 
+  $  su // chnage to root 
+  $  sudo su -c "echo '$USER ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers.d/admin" root             // add to sudores group 
+  $  exit
+  $ sudo subscription-manager register                        //register the vm with subscription mnager with your redhat usrname and password to connect with repos and to donlnload the packages.
+    username: <your-redhat-user-name-with-develpoer-account>
+    password: <password>
+  $  sudo rpm update -y
+  $  subscription-manager identity   // Register with Redhat content delvery .
+  $  sudo dnf update                 //Update the Repository           
+  $  sudo dnf install httpd          //intalled httpd package
+  $  dnf info httpd                  //check information about package
+  $  rpm -q httpd                    // check the package namje by passing -q for query
+  $  sudo dnf update -y
+  $ dnf list installed   // It will list all the installed software packages 
+  $ dnf info installed
+  $ rpm -qa // same to check all trasct all db and repo packages 
+  $ subscription-manager repos --list  // list all that repos are avilable in my subscription manager may be 100s of repos 
+       Repo ID:   cert-manager-1.13-for-rhel-9-x86_64-debug-rpms
+       Repo Name: Cert Manager support for Red Hat OpenShift 1.13 for RHEL 9 x86_64
+           (Debug RPMs)
+       Repo URL:  https://cdn.redhat.com/content/dist/layered/rhel9/x86_64/cert-manager/1.13/debug
+       Enabled:   0
+The above is the one of the repo from the list . If i want to add this for enabling in my system then follow below steps :
+       $ sudo dnf config-manager --set-enabled cert-manager-1.13-for-rhel-9-x86_64-debug-rpms             // enabling the repos.
+       $ sudo dnf repolist enabled            // Verify is this added your repo or not 
+        repo id                                        repo name
+        cert-manager-1.13-for-rhel-9-x86_64-debug-rpms Cert Manager support for Red Hat OpenShift 1.13 for RHEL 9 x86_64 (Debug RPMs)
+        google-chrome                                  google-chrome
+        rhel-9-for-x86_64-appstream-rpms               Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+        rhel-9-for-x86_64-baseos-rpms                  Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs
+
+  $ dnf repolist
+    root@demo-rhel ~]# dnf repolist
+        Updating Subscription Management repositories.
+        repo id                          repo name
+        google-chrome                    google-chrome
+        rhel-9-for-x86_64-appstream-rpms Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+        rhel-9-for-x86_64-baseos-rpms    Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+
+  [rhel@demo-rhel practice]$ subscription-manager repos --list-enabled
+        You are attempting to run "subscription-manager" which requires administrative
+        privileges, but more information is needed in order to do so.
+        Authenticating as "root"
+        Password: 
+        +----------------------------------------------------------+
+            Available Repositories in /etc/yum.repos.d/redhat.repo
+        +----------------------------------------------------------+
+        Repo ID:   rhel-9-for-x86_64-baseos-rpms
+        Repo Name: Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+        Repo URL:  https://cdn.redhat.com/content/dist/rhel9/$releasever/x86_64/baseos/o
+                  s
+        Enabled:   1
+
+        Repo ID:   rhel-9-for-x86_64-appstream-rpms
+        Repo Name: Red Hat Enterprise Linux 9 for x86_64 - AppStream (RPMs)
+        Repo URL:  https://cdn.redhat.com/content/dist/rhel9/$releasever/x86_64/appstrea
+                  m/os
+        Enabled:   1
+  $ dnf remove httpd               // removing httpd pachnages 
+  $ dnf info httpd                 // it will serach in all repos does this available in our repos or not.
+        Updating Subscription Management repositories.
+        Cert Manager support for Red Hat OpenShift 1.13 158  B/s | 512  B     00:03    
+        Red Hat Enterprise Linux 9 for x86_64 - BaseOS  6.3 kB/s | 4.1 kB     00:00    
+        Red Hat Enterprise Linux 9 for x86_64 - AppStre 8.0 kB/s | 4.5 kB     00:00    
+        Available Packages
+        Name         : httpd
+        Version      : 2.4.57
+        Release      : 5.el9
+        Architecture : x86_64
+        Size         : 52 k
+        Source       : httpd-2.4.57-5.el9.src.rpm
+        Repository   : rhel-9-for-x86_64-appstream-rpms
+        Summary      : Apache HTTP Server
+        URL          : https://httpd.apache.org/
+        License      : ASL 2.0
+        Description  : The Apache HTTP Server is a powerful, efficient, and extensible
+                    : web server.
+====================================
+Update and enable the Repo in the config file and then reload the repo.
+  Update the repo in the file to enable 0 to 1(User/etc/yum.repos.d/redhat.repo)
+  $ sudo dnf clean all     // it will clean the cache
+  $ sudo dnf makecache     // it will reload the repo as below.
+    [root@demo-rhel /]# sudo dnf clean all
+          sudo dnf makecache
+          Updating Subscription Management repositories.
+          30 files removed
+          Updating Subscription Management repositories.
+          google-chrome                                   3.9 kB/s | 3.6 kB     00:00    
+          Cert Manager support for Red Hat OpenShift 1.13 335  B/s | 512  B     00:01    
+          Red Hat Enterprise Linux 9 for x86_64 - BaseOS  1.2 MB/s |  17 MB     00:13    
+          Red Hat Enterprise Linux 9 for x86_64 - AppStre 2.4 MB/s |  29 MB     00:11    
+          Metadata cache created.    
+RPM package file names consist of four elements (plus the .rpm suffix): name-version-release.architecture:
+    xorg-x11-server-Xorg.x86_64.rpm
+
+Instaling RPM Package:
+  $ rpm -ivh podman-4.0.0-6.el9.x86_64.rpm
+
+  $ sudo dnf list available
+  $ sudo dnf update example-package 
+
+  $ dnf search podman
+  $ dnf install podman
+  $ podman version 
+
+  $ sudo dnf list available | grep podman
+    pcp-pmda-podman.x86_64                               6.0.5-4.el9                         rhel-9-for-x86_64-appstream-rpms
+    podman-catatonit.x86_64                              2:4.2.0-11.el9_1                    rhel-9-for-x86_64-appstream-rpms
+    podman-docker.noarch                                 2:4.6.1-7.el9_3                     rhel-9-for-x86_64-appstream-rpms
+    podman-gvproxy.x86_64                                2:4.6.1-7.el9_3                     rhel-9-for-x86_64-appstream-rpms
+    podman-plugins.x86_64                                2:4.6.1-7.el9_3                     rhel-9-for-x86_64-appstream-rpms
+    podman-remote.x86_64                                 2:4.6.1-7.el9_3                     rhel-9-for-x86_64-appstream-rpms
+    podman-tests.x86_64                                  2:4.6.1-7.el9_3                     rhel-9-for-x86_64-appstream-rpms
+    python3-podman.noarch                                3:4.6.0-1.el9                       rhel-9-for-x86_64-appstream-rpms
+  $ sudo dnf install podman-docker.noarch  //install podman with spesific package.
+  
+  ===============================
+  Install cockpit for websconsole 
+  ===============================
+  262  sudo dnf install cockpit
+  263  systemctl enable --now cockpit.socket
+  264  firewall-cmd --add-service=cockpit --permanent
+  265  firewall-cmd --reload
+  266  hostanme 
+  267  hostname 
+  268  ping demo-rhel
+  269  hostname -f
+  270  https://servername:9090   //hostname or IP  (Access the Red Hat websonsle to aceess system from browser)
