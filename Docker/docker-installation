@@ -1,1 +1,98 @@
+Docker:
 
+$ docker network ls -> to list down the avilable network on the host.
+$ ip a 
+$ docker0 is also a bridge network that created bydefault.
+
+$ docker run -dt ubuntu bash
+$ docker run --name myubuntu -dt ubuntu bash .
+$ sudo yum install bridge-utils   //install util to check docker bridg network details
+ 
+[atiadmin@rhel-vm-01 ~]$ nmcli con show           //list out all the intervaces.
+NAME     UUID                                  TYPE      DEVICE  
+ens160   fa6cd385-3a8b-3905-99c0-8ec77d06128b  ethernet  ens160  
+docker0  7776207a-7fcd-4276-81cd-dc9c0df9e645  bridge    docker0 
+lo       62804010-ccdc-4efd-8733-4bd8a53c07f3  loopback  lo      
+[atiadmin@rhel-vm-01 ~]$ bridge link show
+9: veth2174bb8@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+11: veth9bc94dd@if10: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+
+
+[atiadmin@rhel-vm-01 ~]$ ip addr show docker0
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:5a:28:e0:71 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:5aff:fe28:e071/64 scope link 
+       valid_lft forever preferred_lft forever
+
+
+Bridge Network:
+================
+Docker networking:                     Note: We can communicate conatiner inside of  same bridge . different bridge connection is not possible i mean bridge network to bridge netwok connection not possible.
+=>By default docker uses default bridge while creating container.
+$ docker network create custom_bridge          //to create custom bridge network
+$ docker network ls 
+[atiadmin@rhel-vm-01 ~]$ docker run -dt --network custom_bridge ubuntu bash  //create container with custo bridge network.
+
+Removing network:
+[atiadmin@rhel-vm-01 ~]$ docker network rm  custom_bridge
+
+$ sudo apt update && sudo apt install iputils-ping  //to insatll ping util inside of docker container.
+
+
+Host Network:
+=============
+Continer host network desable the network isolation of container , where as it uses host network and port . Preferlby for standalone application we use host network.
+
+$ docker login // provide credential 
+[atiadmin@rhel-vm-01 ~]$ docker run -dt --network host --name  my_ngnix nginx bash 
+
+You can access you nginx application by using <PUblic IP of VM: port>
+
+[atiadmin@rhel-vm-01 ~]$ sudo netstat -tuln 
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 127.0.0.1:4330          0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN 
+
+$ docker network connect custom_bridge <container ID> //here we can connect one custome bridge conatiner to another custome bridge container , bu we can not connect all the network containers.
+$ docker network create
+$ docker network disconnect  //remove network inetrface  from container
+$ docker network inspect
+$ docker network ls 
+$ docker network prune   //remove unused network
+$ docker network Rm     // delete the network 
+
+Docker Storage :
+===============
+1.Bind mount :
+---------------
+
+$ docker run -d --name devtest -v "$(pwd)"/target:/app:ro nginx:latest        //here target path of local will mount wit app of the container , however -V will create the target directory if it will not be there and ro is read only permission .
+
+$ docker run -dt -p 81:80 -v /home/vol-share:/var/www/html --name my_ngnix_volume ubuntu /bin/bash       //we have to open 81 port on host 
+
+Volume can be chared with multiple container for high avilabilty of simillar container.
+
+
+2.tmpfs mount : it will be temeprary mount will live along with the container life cycle and then auto clean up automatically.
+--------------
+$ docker run -dt --name myniinx --tmpfs /app nginx:latest bash            //here will not provide any host path it will auto pic from the memory tmp deirectory and auto celan .
+
+3.Docker local Volume:
+----------------------
+$ docker voulme create my-vol1
+=>default location of the local volume will be /var/lib/docker/volume/<volume_name>
+
+$ docker voulme create --drive local --opt type=btrfs --opt device=/dv/sda2 my-vol 
+=>it will create volume in the device mount path.
+
+$ docker volume create --drive local --opt type=nfs --opt o=addr=192.168.1.1,rw --opt device=:/path/to/dir my-nfs
+=> It will create volume mount in spesific nfs path
+
+----
+
+$ docker run -dt --name=nginxttest -v my-vol:/app:ro nginx:latest bash
+=> here if docker local volume is not created before it will create inside of the /var/lib/docker/volume path and managed by docker deamon.
