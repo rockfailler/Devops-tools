@@ -1,0 +1,120 @@
+Helm is a package manager for Kubernetes that configures and deploys applications and services on a Kubernetes cluster. It uses Helm charts to simplify the development and deployment process.
+Most Kubernetes deployments require multiple YAML files to configure the necessary resources. Helm charts package all the deployment information into a single chart, simplifying the procedure and flattening the Kubernetes learning curve.
+
+In this step-by-step tutorial, you will learn how to install Helm on Ubuntu, Mac, or Windows.
+
+How to install Helm.
+Prerequisites:
+A system running Ubuntu, macOS, or Windows
+Access to a command line/terminal
+A Kubernetes cluster installed and configured
+Note: If you do not have a Kubernetes cluster installed, find instructions in our tutorials:
+
+How to Install Kubernetes on Ubuntu
+How to Install Kubernetes on CentOS
+How to Run Kubernetes on Windows
+How to Install Helm
+Helm can be installed on all major operating systems that support Kubernetes. The sections below describe the steps to install it on Ubuntu, macOS, and Windows. The instructions for Ubuntu can be used to install Helm on other popular Linux distributions as well.
+
+Installing Helm on Ubuntu
+To install Helm on Ubuntu:
+
+1. Use wget to download the latest version of Helm. The download links for all supported architectures are available on the official website. For example, if your system uses the x64 architecture, type the following in the terminal to download the 3.9.3 version of Helm:
+
+wget https://get.helm.sh/helm-v3.9.3-linux-amd64.tar.gz
+
+The terminal prints out a confirmation message when the download completes.
+
+Downloading Helm with the wget command.
+2. Next, unpack the Helm file using the Linux tar command:
+
+tar xvf helm-v3.9.3-linux-amd64.tar.gz
+
+The output displays four unpacked files.
+
+Unpacking Helm.
+3. Move the linux-amd64/helm file to the /usr/local/bin directory:
+
+sudo mv linux-amd64/helm /usr/local/bin
+
+There will be no output if the command was executed correctly.
+
+4. Remove the downloaded file using the following command:
+
+rm helm-v3.4.1-linux-amd64.tar.gz
+
+5. Remove the linux-amd64 directory to clean up space by running:
+
+rm -rf linux-amd64
+
+6. Finally, verify you have successfully installed Helm by checking the version of the software:
+
+helm version
+
+The terminal prints out the version number of the software, as well as the release numbers of GitCommit, GitTreeState, and GoVersion.
+
+Verifying the completion of Helm installation.
+Note: Upgrading your Helm releases can sometimes produce the “helm has no deployed releases” error.
+
+Installing Helm on Mac
+The easiest way to install Helm on macOS is to use the Homebrew package manager. The steps below describe this procedure.
+
+1. Make sure you have Homebrew installed by checking the installed version:
+
+brew -version
+
+Checking the Homebrew version.
+Note: For instructions on how to install Homebrew, read How to Install Homebrew on Mac.
+
+2. Update the Homebrew formulae:
+
+brew update
+
+3. Install Helm using the following command:
+
+brew install helm
+
+Installing Helm with Homebrew.
+4. Confirm the installation success by checking the Helm version:
+
+helm version
+
+Checking the Helm version.
+Note: In order to effectively deploy applications, you need to familiarize yourself with repositories management. Learn more by referring to our article How To Add, Update Or Remove Helm Repositories or download our Helm Cheat Sheet of basic Helm commands for further reference.
+
+Installing Helm on Windows
+To download Helm on Windows:
+
+1. Visit the official Helm releases page on GitHub.
+
+2. Locate the Windows amd64 download link from the Installation platform list and select it to download.
+
+Downloading Helm for Windows from the official GitHub page.
+3. Next, extract the windows-amd64 zip to the preferred location.
+
+Extracting Helm zip file.
+For the Helm binary to function properly, add it to the Path environmental variable.
+
+4. In Windows Run prompt, type sysdm.cpl and click OK.
+
+The Windows Run dialogue.
+5. In the Advanced tab of the System Properties, select Environment Variables.
+
+The Advanced tab in System Properties.
+6. Select the Path variable and click Edit.
+
+Editing the Path variable.
+6. Select New and input the location of the Helm binary. Press Enter to confirm.
+
+Adding the new path to the Path variable.
+7. Open the command line window and enter the helm command to verify that you have access to Helm.
+
+Checking the Helm command in Windows.
+Note: If you use the Chocolatey package manager for Windows, you can install Helm by typing:
+
+choco install kubernetes-helm
+Conclusion
+
+After following this step-by-step tutorial, you should have successfully installed Helm on Ubuntu, Mac, or Windows.
+
+Helm is a tool that simplifies the complexity of Kubernetes, and it is an excellent start for beginners. Next, we recommend our articles on How to Create Helm Charts or How To Use Environment Variables With Helm Charts.
