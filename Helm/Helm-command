@@ -1,0 +1,56 @@
+$ helm version 
+
+$ helm repo fetch bitnami/wordpress       #it will dowload the chat in .tgz extension under currect directory. we can them extract the chat and can use of this chart.
+$ tar -xvf  <.tgz> 
+$ helm install ./wordpres 
+
+$ helm pull --untar <chart name >          # it will unpack in current directory, if you have repo availabe in local.
+
+
+-----------------
+$ helm create <chart name>                    #it will create a chart .lets name is demo
+=> Under this chart directory , ther will be sub file and directory has been created.
+               Chart.yaml          # contains information about the chart and  Chart Version and app version. 
+							 Charts
+							 Templates
+							 Values.yaml
+$ helm install demo ../demo --dry-run   #it will show the the manifest and instructions .
+$ helm install demo ../demo             #it will install chart and will shows only instructions .
+
+$ helm show values ./<chart name>        #it will shoes the values from the values.yam  and we have to give the patch to the chart.
+                                       # we can ovveride the values 3 wayes .
+
+
+                                         * by inline command $ helm install <releaseName> ../<chartName> --set image.tag=latest --dry-run            it will overide the images tag ans will apply to the release.
+                                         * by create anoter valyes.yaml fine and pass thid file to the chart in command line $ helm install demo ../<chartname>	-f newvalues.yaml  # it willvalues from this file .
+                                         * by direct modifying the Values.yaml file.
+
+
+$ helm get all <release name > -n <namespace>			    # show all the yaml of this chat has been deployed with status of note file.	(helm get all configurationservice -n managementapp)				 
+$ helm get values my-wordpreservice -n wordpress      # it will show values.yaml details 
+$ helm get manifest my-wordpreservice -n wordpress    # It will give all the mainifest yaml
+$ helm status my-wordpreservice -n wordpress          #here configuetion service is release naame and follwed by namespace . it will sghow the status in note .
+$ helm history my-wordpreservice -n wordpress         # Helm shows the history .
+
+
+
+$ helm delete <release name > <Chart Name>          # to dlete the chart
+$ helm upgrade <release name > <Chart Name>  
+$ helm install <release name > <Chart Name>  --version 0.4.0   # to install spesifc version if it ias vailable in the repository.
+
+
+
+$ helm rollback <release name>           # it will back to the immidiate previous version .
+
+
+$ helm rollback <release name>  <revison version>
+
+
+$ helm rollback <release name>  2    # it will back to last 2 deploymnet .
+
+
+$ helm pull --untar <chart name >    # it will unpack in current directory, if you have repo availabe in local.
+
+
+
+
