@@ -3,4 +3,5 @@ $ echo $SHELL                      # verify the current user shell.
 $ cat /etc/password                # check all available user shell
 $ echo $TERM                       # print the value for the varible 
 $ echo 'export MY_VARIABLE="example_value"' >> ~/.profile            # permanetly save the varibale by making entry to the .profile file which is availabe under user home directory.
-$ 
+$ alias dt=date                    # setting up the alias for date command as dt 
+
