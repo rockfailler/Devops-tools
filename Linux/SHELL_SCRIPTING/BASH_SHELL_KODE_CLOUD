@@ -1,1 +1,3 @@
-
+$ sudo chsh -s /bin/sh bob         #Change shell to Bourn Shell for user "bob"
+$ echo $SHELL                      # verify the current user shell.
+$ cat /etc/password                # check all available user shell
