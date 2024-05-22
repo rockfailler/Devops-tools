@@ -4,4 +4,23 @@ $ cat /etc/password                # check all available user shell
 $ echo $TERM                       # print the value for the varible 
 $ echo 'export MY_VARIABLE="example_value"' >> ~/.profile            # permanetly save the varibale by making entry to the .profile file which is availabe under user home directory.
 $ alias dt=date                    # setting up the alias for date command as dt 
-
+$ uname -r                         # it will print the kernal version, where 5 is kernal version and 4 is major version, 1106 is release patch , gcp is generic name 
+  5.4.0-1106-gcp
+$ uname                            # it will only show the kernal name.
+  Linux
+$ uname -a                         # it will show complete kernal details
+  Linux caleston-lp10 5.4.0-1106-gcp #115~18.04.1-Ubuntu SMP Mon May 22 20:46:39 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+$ cat /etc/os-release              # it will show you the OS details.
+NAME="Ubuntu"
+  VERSION="18.04.4 LTS (Bionic Beaver)"
+  ID=ubuntu
+  ID_LIKE=debian
+  PRETTY_NAME="Ubuntu 18.04.4 LTS"
+  VERSION_ID="18.04"
+  HOME_URL="https://www.ubuntu.com/"
+  SUPPORT_URL="https://help.ubuntu.com/"
+  BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+  PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+  VERSION_CODENAME=bionic
+  UBUNTU_CODENAME=bionic
+$ 
