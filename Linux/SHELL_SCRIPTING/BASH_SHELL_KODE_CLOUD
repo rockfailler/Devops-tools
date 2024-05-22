@@ -27,3 +27,19 @@ $ lsmem                                 # displays about memory.
 # free -m , free -g                     # display memory usages in Mb and Gb.
 $ lscpu                                 # displays about CPU information.
 
+Q. Linux kernal bootup process or boot up sequence ?
+      The Linux boot sequence involves several key stages from powering on the system to loading the operating system. Here's a detailed breakdown of the kernel bootup sequence as outlined in the image:
+      
+      1. BIOS POST (Power-On Self Test):
+         - The Basic Input/Output System (BIOS) performs a POST to check the hardware components and ensure they are functioning correctly. This includes checks for memory, disk drives, and other peripherals.
+      
+      2. Boot Loader (GRUB2):
+         - The BIOS transfers control to the boot loader, typically GRUB2 (Grand Unified Bootloader version 2). GRUB2 is responsible for loading the Linux kernel into memory. It presents a menu to the user to select the operating system or kernel version to boot, and then it loads the selected kernel along with an initial RAM disk (initrd).
+      
+      3. Kernel Initialization:
+         - The Linux kernel takes over from the boot loader. During this phase, the kernel initializes all its components, such as memory management, process management, and device drivers. It also mounts the root filesystem and executes the `init` process.
+      
+      4. INIT Process (systemd):
+         - The kernel starts the `init` process, which is the first user-space process. On modern Linux systems, this is usually `systemd`. `systemd` is responsible for initializing the system, starting and managing system services, and handling system states and targets.
+      
+  $ runlevel                          # if the output is 3 that means kernal sets into command line interface. if the output is 5 then it is GUI interface.
