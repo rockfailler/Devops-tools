@@ -23,4 +23,7 @@ NAME="Ubuntu"
   PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
   VERSION_CODENAME=bionic
   UBUNTU_CODENAME=bionic
-$ 
+$ lsmem                                 # displays about memory.
+# free -m , free -g                     # display memory usages in Mb and Gb.
+$ lscpu                                 # displays about CPU information.
+
